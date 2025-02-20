@@ -20,7 +20,7 @@ A Discord bot that tracks and provides statistics about Wikipedia changes in rea
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:heinsmit06/wikipedia-discord-bot.git
 cd wikipedia-discord-bot
 ```
 
@@ -107,4 +107,4 @@ This enhanced architecture would provide:
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests!
+This project is a work in progress and will be updated as time goes on, specifically the architecture and organization of the code.
