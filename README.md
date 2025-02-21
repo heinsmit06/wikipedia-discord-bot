@@ -77,33 +77,44 @@ The project uses a two-service architecture:
 1. Stats Service: Connects to Wikipedia SSE stream, processes events, and stores statistics in PostgreSQL
 2. Discord Bot: Handles user interactions and queries the database for statistics
 
-### Potential Scalability Improvements
+### Potential Scalability with Kafka
 
-The current architecture could be enhanced for higher scalability using:
+While the current architecture is sufficient for basic usage, it could be enhanced using Kafka for better scalability. Here are two possible Kafka integration approaches:
 
-1. **Kafka Integration**:
-   - Replace direct Wikipedia SSE consumption with a Kafka pipeline
-   - Wikipedia events -> Kafka topics (partitioned by language)
-   - Multiple consumers can process events in parallel
-   - Better fault tolerance and event replay capabilities
-
-2. **Spark Streaming**:
-   - Process Wikipedia events using Spark Streaming for real-time analytics
-   - Aggregate statistics in micro-batches
-   - Handle higher throughput with distributed processing
-   - Enable more complex analytics (e.g., trending topics, user activity patterns)
-
-Example Kafka/Spark Architecture:
+1. **Simple Kafka Integration**:
 ```
-[Wikipedia SSE] -> [Kafka Producer] -> [Kafka Topics] -> [Spark Streaming] -> [PostgreSQL]
-                                                     \-> [Discord Bot]
+[SSE Stream from Wikipedia] -> [Bot] -> [Kafka Topic] -> [Analytics Service]
+                                                     \-> [Discord Notifications]
 ```
+
+2. **Multi-Source Kafka Integration**:
+```
+[Wikipedia EN]    \
+[Wikipedia RU]     -> [Bot] -> [Kafka Topic] -> [Discord Bot Instance 1]
+[Other source]    /                         \-> [Discord Bot Instance 2]
+                                           \-> [Analytics Service]
+                                           \-> [Monitoring Service]
+```
+
+In this architecture:
+- Multiple sources (Wikipedia EN, RU, Other) send events to your bot
+- Bot acts as a producer and sends all events to Kafka
+- Multiple consumers (bot instances, analytics, monitoring) independently read events from Kafka
 
 This enhanced architecture would provide:
 - Better scalability for high-volume events
 - Fault tolerance and data replay capabilities
 - More sophisticated analytics possibilities
 - Easier integration with other services
+
+💡 **When to Use Kafka**
+
+Currently, there is no need for Kafka because the event volume is low, and the setup is simple.
+
+Consider implementing Kafka if:
+- You start adding more event sources
+- You need more than just your bot to consume the data
+- You face scalability issues, such as Discord API rate limits
 
 ## Contributing
 
